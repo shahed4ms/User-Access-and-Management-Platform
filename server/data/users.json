@@ -1,0 +1,34 @@
+{
+  "users": [
+    {
+      "userId": "admin",
+      "name": "System Admin",
+      "password": "admin123",
+      "role": "Admin",
+      "email": "admin@demo.local",
+      "department": "IT",
+      "status": "Active",
+      "accessLevel": "Full"
+    },
+    {
+      "userId": "user01",
+      "name": "John Miller",
+      "password": "pass123",
+      "role": "General User",
+      "email": "john@demo.local",
+      "department": "Sales",
+      "status": "Active",
+      "accessLevel": "Read"
+    },
+    {
+      "userId": "user02",
+      "name": "Alicia Grant",
+      "password": "pass123",
+      "role": "General User",
+      "email": "alicia@demo.local",
+      "department": "Finance",
+      "status": "Active",
+      "accessLevel": "Read"
+    }
+  ]
+}

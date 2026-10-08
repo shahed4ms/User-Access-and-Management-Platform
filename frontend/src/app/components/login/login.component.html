@@ -1,0 +1,44 @@
+<div class="login-shell">
+  <div class="login-card">
+    <div class="brand-block">
+      <span class="brand-kicker">Demo Access Portal</span>
+      <h1>Secure Login</h1>
+      <p>Role-aware user management built for access control, analytics, and admin workflows.</p>
+    </div>
+
+    <form (ngSubmit)="login()" novalidate>
+      <label class="field">
+        <span>User ID</span>
+        <input type="text" name="userId" [(ngModel)]="authForm.userId" required />
+      </label>
+
+      <label class="field">
+        <span>Password</span>
+        <input type="password" name="password" [(ngModel)]="authForm.password" required />
+      </label>
+
+      <label class="field">
+        <span>Role</span>
+        <select name="role" [(ngModel)]="authForm.role">
+          <option value="General User">General User</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </label>
+
+      <button type="submit" class="primary-btn" [disabled]="isAuthenticating">
+        {{ isAuthenticating ? 'Logging in...' : 'Login' }}
+      </button>
+    </form>
+
+    <div class="demo-card">
+      <strong>Demo accounts</strong>
+      <ul>
+        <li *ngFor="let account of demoAccounts">
+          {{ account.userId }} / {{ account.password }} / {{ account.role }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  </div>
+</div>

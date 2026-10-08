@@ -1,0 +1,174 @@
+<div class="dashboard-shell">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Welcome back</p>
+      <h1>{{ currentUser?.name }}</h1>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="status-pill">{{ appStatus }}</span>
+      <button class="secondary-btn" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <section class="summary-grid">
+    <article class="card profile-card">
+      <div class="card-header">
+        <h3>User Details</h3>
+        <span class="badge" [class.admin]="currentUser?.role === 'Admin'">{{ currentUser?.role }}</span>
+      </div>
+
+      <ul class="detail-list">
+        <li><span>User ID</span><strong>{{ currentUser?.userId }}</strong></li>
+        <li><span>Email</span><strong>{{ currentUser?.email }}</strong></li>
+        <li><span>Department</span><strong>{{ currentUser?.department }}</strong></li>
+        <li><span>Status</span><strong>{{ currentUser?.status }}</strong></li>
+        <li><span>Access Level</span><strong>{{ currentUser?.accessLevel }}</strong></li>
+      </ul>
+    </article>
+
+    <article class="card info-card">
+      <div class="card-header">
+        <h3>API Load Status</h3>
+      </div>
+
+      <p class="load-text">The API delay is configurable and simulates async processing on page load.</p>
+
+      <div class="sync-row">
+        <span>Delay</span>
+        <strong>{{ currentUser?.role === 'Admin' ? '2200 ms' : '1500 ms' }}</strong>
+      </div>
+
+      <div class="sync-row">
+        <span>Last Processed</span>
+        <strong>{{ lastProcessedAt || 'Waiting...' }}</strong>
+      </div>
+    </article>
+  </section>
+
+  <section class="content-grid">
+    <article class="card records-card">
+      <div class="card-header">
+        <h3>Records</h3>
+        <button type="button" class="secondary-btn" (click)="loadRecords(currentUser?.userId ?? '', currentUser?.role === 'Admin' ? 2200 : 1500)">
+          {{ isRecordsLoading ? 'Loading...' : 'Refresh' }}
+        </button>
+      </div>
+
+      <div class="loading-panel" *ngIf="isRecordsLoading">
+        <span class="spinner"></span>
+        <p>Processing records asynchronously...</p>
+      </div>
+
+      <div class="table-wrapper" *ngIf="!isRecordsLoading && records.length">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Access</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let record of records">
+              <td>{{ record.id }}</td>
+              <td>{{ record.title }}</td>
+              <td>{{ record.type }}</td>
+              <td><span class="status-inline">{{ record.status }}</span></td>
+              <td>{{ record.amount | currency : 'USD' : 'symbol' : '1.0-0' }}</td>
+              <td>{{ record.access }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" *ngIf="!isRecordsLoading && !records.length">
+        No records found for this profile.
+      </div>
+    </article>
+
+    <article class="card admin-card" *ngIf="isAdmin">
+      <div class="card-header">
+        <h3>Manage Users</h3>
+      </div>
+
+      <form class="inline-form" (ngSubmit)="addUser()">
+        <div class="field-row">
+          <label class="field">
+            <span>User ID</span>
+            <input type="text" name="userId" [(ngModel)]="newUserForm.userId" required />
+          </label>
+
+          <label class="field">
+            <span>Name</span>
+            <input type="text" name="name" [(ngModel)]="newUserForm.name" required />
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Password</span>
+            <input type="password" name="password" [(ngModel)]="newUserForm.password" required />
+          </label>
+
+          <label class="field">
+            <span>Role</span>
+            <select name="newRole" [(ngModel)]="newUserForm.role">
+              <option value="General User">General User</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Email</span>
+            <input type="email" name="email" [(ngModel)]="newUserForm.email" />
+          </label>
+
+          <label class="field">
+            <span>Department</span>
+            <input type="text" name="department" [(ngModel)]="newUserForm.department" />
+          </label>
+        </div>
+
+        <button type="submit" class="primary-btn" [disabled]="isUsersLoading">
+          {{ isUsersLoading ? 'Saving...' : 'Add User' }}
+        </button>
+      </form>
+
+      <div class="message success" *ngIf="infoMessage">{{ infoMessage }}</div>
+      <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <div class="user-table">
+        <table>
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Role</th>
+              <th>Department</th>
+              <th>Access</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{ user.userId }}</td>
+              <td>{{ user.role }}</td>
+              <td>{{ user.department }}</td>
+              <td>{{ user.accessLevel }}</td>
+              <td>
+                <button type="button" class="danger-btn" (click)="deleteUser(user.userId)" [disabled]="user.userId === currentUser?.userId">
+                  Remove
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+</div>
